@@ -1,4 +1,5 @@
 import { JSX } from "solid-js";
+import { ChildProperties } from "solid-js/web/types/server.js";
 
 export namespace Maths {
   export function clamp(value: number, min: number, max: number): number {
@@ -84,6 +85,7 @@ export type ElementFunc<TProps> = (props: TProps) => JSX.Element;
 export interface Tag<T extends string> {
   readonly tag: T;
 };
+export interface ChildrenProp extends Pick<JSX.HTMLAttributes<HTMLDivElement>, 'children'> {}
 export type ButtonHandler = JSX.EventHandler<HTMLButtonElement, MouseEvent>;
 export type MouseUnion<T extends HTMLElement> = JSX.EventHandlerUnion<T, MouseEvent, JSX.EventHandler<T, MouseEvent>> | undefined;
 export type MouseHandler<T extends HTMLElement> = JSX.EventHandler<T, MouseEvent>;
@@ -94,7 +96,7 @@ export function tryHandlingEvent<T extends HTMLElement>(fn: MouseUnion<T>, ev: M
       (fn as any)(ev);
     }
   } catch (e) {
-    console.log(`handleExisting failed with fn '${fn}' and event '${ev}', producing error '${e}'`);
+    console.error(`handleExisting failed with fn '${fn}' and event '${ev}', producing error '${e}'`);
   }
 }
 

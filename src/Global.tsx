@@ -1,5 +1,5 @@
 import { Accessor, createContext, createEffect, createSignal, JSX, onCleanup, onMount, Setter, useContext } from "solid-js";
-import { debounce, IVec } from "./util";
+import { ChildrenProp, debounce, IVec } from "./util";
 
 export namespace DeviceWidth {
   export type Value = 'tiny' | 'small' | 'medium' | 'large';
@@ -47,22 +47,20 @@ export type GlobalData = {
 
 const GlobalContext = createContext<GlobalData>();
 
-interface ChildrenProps extends Pick<JSX.HTMLAttributes<'div'>, 'children'> {}
-
-export function GlobalProvider(props:ChildrenProps): JSX.Element {
-const [apiKey, setApiKey] = createSignal("");
+export function GlobalProvider(props: ChildrenProp): JSX.Element {
+  const [apiKey, setApiKey] = createSignal("");
   let theme = {};
-  const [windowSize, setWindowSize] = createSignal<IVec>({x:0,y:0});
+  const [windowSize, setWindowSize] = createSignal<IVec>({ x: 0, y: 0 });
   const [deviceWidth, setDeviceWidth] = createSignal<DeviceWidth.Value>('small');
   const [isScreenSmall, setIsScreenSmall] = createSignal(false);
   const handleResize = debounce(() => {
-    const size = {x:0, y:0};
+    const size = { x: window.innerWidth, y: window.innerHeight };
     setWindowSize(size);
     if (size.x < 280) {
       setDeviceWidth('tiny');
     } else if (size.x < 450) {
       setDeviceWidth('small');
-    } else if (size.x< 720) {
+    } else if (size.x < 720) {
       setDeviceWidth('medium');
     } else {
       setDeviceWidth('large');
@@ -95,7 +93,7 @@ const [apiKey, setApiKey] = createSignal("");
 
   return (
     <GlobalContext.Provider
-    value={value} >
+      value={value} >
       {props.children}
     </GlobalContext.Provider>
   );
